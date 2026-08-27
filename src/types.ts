@@ -20,12 +20,29 @@ export interface ParkingSpot {
   notes: string;
 }
 
+export interface RouteStep {
+  lat: number;
+  lng: number;
+  distanceMeters: number;
+  durationSeconds: number;
+}
+
 export interface RouteLeg {
   fromId: string;
   toId: string;
   distanceMeters: number;
   durationSeconds: number;
   polyline: string;
+  steps: RouteStep[];
+}
+
+export interface SuggestedStop {
+  id: string;
+  lat: number;
+  lng: number;
+  legIndex: number;
+  milesIntoLeg: number;
+  hoursIntoLeg: number;
 }
 
 export interface GpsPing {

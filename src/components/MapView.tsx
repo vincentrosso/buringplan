@@ -1,6 +1,6 @@
 import { GoogleMap, Marker, Polyline } from '@react-google-maps/api';
 import { useMemo } from 'react';
-import type { ParkingSpot, RouteLeg, Waypoint } from '../types';
+import type { ParkingSpot, RouteLeg, SuggestedStop, Waypoint } from '../types';
 
 const CONTAINER_STYLE = { width: '100%', height: '100%' };
 
@@ -10,6 +10,7 @@ interface MapViewProps {
   waypoints: Waypoint[];
   parkingSpots?: ParkingSpot[];
   routeLegs?: RouteLeg[];
+  suggestedStops?: SuggestedStop[];
   currentPosition?: { lat: number; lng: number } | null;
   height?: string;
 }
@@ -18,6 +19,7 @@ export default function MapView({
   waypoints,
   parkingSpots = [],
   routeLegs = [],
+  suggestedStops = [],
   currentPosition = null,
   height = '400px',
 }: MapViewProps) {
@@ -56,6 +58,17 @@ export default function MapView({
                 spot.category === 'walmart'
                   ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                   : 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+            }}
+          />
+        ))}
+
+        {suggestedStops.map((stop) => (
+          <Marker
+            key={stop.id}
+            position={{ lat: stop.lat, lng: stop.lng }}
+            title={`Suggested rest stop — ~${stop.milesIntoLeg.toFixed(0)} mi / ${stop.hoursIntoLeg.toFixed(1)} hrs into leg`}
+            icon={{
+              url: 'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png',
             }}
           />
         ))}

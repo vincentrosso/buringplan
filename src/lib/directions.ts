@@ -33,6 +33,12 @@ export async function fetchLeg(from: Waypoint, to: Waypoint): Promise<RouteLeg> 
     distanceMeters: leg.distance?.value ?? 0,
     durationSeconds: leg.duration?.value ?? 0,
     polyline: route.overview_polyline ?? '',
+    steps: (leg.steps ?? []).map((step) => ({
+      lat: step.end_location.lat(),
+      lng: step.end_location.lng(),
+      distanceMeters: step.distance?.value ?? 0,
+      durationSeconds: step.duration?.value ?? 0,
+    })),
   };
   cache.set(key, routeLeg);
   return routeLeg;

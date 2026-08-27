@@ -37,16 +37,24 @@ const SEED_WAYPOINTS: Waypoint[] = [
   },
 ];
 
+const DEFAULT_STOP_INTERVAL_HOURS = 6;
+const DEFAULT_STOP_INTERVAL_MILES = 200;
+
 interface TripState {
   waypoints: Waypoint[];
   parkingSpots: ParkingSpot[];
+  stopIntervalHours: number;
+  stopIntervalMiles: number;
   addWaypoint: (waypoint: Omit<Waypoint, 'id'>) => void;
+  insertWaypointAt: (index: number, waypoint: Omit<Waypoint, 'id'>) => void;
   removeWaypoint: (id: string) => void;
   updateWaypoint: (id: string, patch: Partial<Waypoint>) => void;
   reorderWaypoints: (fromIndex: number, toIndex: number) => void;
   addParkingSpot: (spot: Omit<ParkingSpot, 'id'>) => void;
   removeParkingSpot: (id: string) => void;
   updateParkingSpotNotes: (id: string, notes: string) => void;
+  setStopIntervalHours: (hours: number) => void;
+  setStopIntervalMiles: (miles: number) => void;
 }
 
 function makeId(): string {
@@ -58,11 +66,20 @@ export const useTripStore = create<TripState>()(
     (set) => ({
       waypoints: SEED_WAYPOINTS,
       parkingSpots: [],
+      stopIntervalHours: DEFAULT_STOP_INTERVAL_HOURS,
+      stopIntervalMiles: DEFAULT_STOP_INTERVAL_MILES,
 
       addWaypoint: (waypoint) =>
         set((state) => ({
           waypoints: [...state.waypoints, { ...waypoint, id: makeId() }],
         })),
+
+      insertWaypointAt: (index, waypoint) =>
+        set((state) => {
+          const next = [...state.waypoints];
+          next.splice(index, 0, { ...waypoint, id: makeId() });
+          return { waypoints: next };
+        }),
 
       removeWaypoint: (id) =>
         set((state) => ({
@@ -101,6 +118,9 @@ export const useTripStore = create<TripState>()(
             p.id === id ? { ...p, notes } : p,
           ),
         })),
+
+      setStopIntervalHours: (hours) => set({ stopIntervalHours: hours }),
+      setStopIntervalMiles: (miles) => set({ stopIntervalMiles: miles }),
     }),
     { name: 'buringplan-trip' },
   ),

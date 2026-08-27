@@ -234,6 +234,133 @@ body {
   font-size: 0.75rem;
 }
 
+.suggested-stops h4 {
+  margin: 0 0 0.5rem;
+}
+
+.stop-interval-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.stop-interval-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.stop-interval-controls input {
+  width: 4rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.stop-interval-hint {
+  color: var(--color-text-dim);
+}
+
+.suggested-stops-empty {
+  color: var(--color-text-dim);
+  font-size: 0.85rem;
+}
+
+.suggested-stops-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.suggested-stops-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid #d4a017;
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.manual-entry-toggle {
+  align-self: flex-start;
+  background: none;
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-dim);
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.manual-entry-form {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.manual-entry-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.manual-entry-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.manual-entry-grid input {
+  padding: 0.35rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.manual-entry-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.trip-log-actions {
+  display: flex;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.trip-log-edit-input {
+  width: 4.5rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.trip-log-edit-input--narrow {
+  width: 2.5rem;
+}
+
+.trip-log-delete-confirm {
+  color: #e57373;
+}
+
 .tracker-buttons button {
   width: 100%;
   padding: 0.75rem;

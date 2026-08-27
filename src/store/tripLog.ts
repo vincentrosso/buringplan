@@ -1,4 +1,4 @@
-import { createStore, entries, set, values } from 'idb-keyval';
+import { createStore, del, entries, get, set, values } from 'idb-keyval';
 import type { DaySummary, GpsPing } from '../types';
 
 // Live GPS pings can number in the thousands over a multi-day tow trip, so each
@@ -30,6 +30,27 @@ export async function saveDaySummary(summary: DaySummary): Promise<void> {
 export async function getAllDaySummaries(): Promise<DaySummary[]> {
   const all = await values<DaySummary>(summariesStore);
   return all.sort((a, b) => a.startTime - b.startTime);
+}
+
+export async function updateDaySummary(
+  tripId: string,
+  patch: Partial<Omit<DaySummary, 'tripId'>>,
+): Promise<void> {
+  const existing = await get<DaySummary>(tripId, summariesStore);
+  if (!existing) return;
+  await set(tripId, { ...existing, ...patch }, summariesStore);
+}
+
+export async function deletePingsForTrip(tripId: string): Promise<void> {
+  const all = await entries<string, GpsPing>(pingsStore);
+  await Promise.all(
+    all.filter(([, ping]) => ping.tripId === tripId).map(([key]) => del(key, pingsStore)),
+  );
+}
+
+export async function deleteDaySummary(tripId: string): Promise<void> {
+  await del(tripId, summariesStore);
+  await deletePingsForTrip(tripId);
 }
 
 export async function exportTripLogJson(): Promise<string> {
