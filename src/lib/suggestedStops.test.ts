@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeSuggestedStops } from './suggestedStops';
+import { computeSuggestedStops, planSuggestedStopInsertions } from './suggestedStops';
 import type { RouteLeg } from '../types';
 
 const METERS_PER_MILE = 1609.344;
@@ -63,5 +63,44 @@ describe('computeSuggestedStops', () => {
   it('returns nothing when both intervals are disabled (<=0)', () => {
     const legs = [makeLeg('a', 'b', [500])];
     expect(computeSuggestedStops(legs, 0, 0)).toEqual([]);
+  });
+});
+
+describe('planSuggestedStopInsertions', () => {
+  it('returns an empty plan when nothing needs splitting', () => {
+    const legs = [makeLeg('a', 'b', [50])];
+    expect(planSuggestedStopInsertions(legs, 6, 200)).toEqual([]);
+  });
+
+  it('targets legIndex + 1 for a single stop in a single leg', () => {
+    const legs = [makeLeg('a', 'b', [100, 100, 100])]; // 300mi -> one stop at 200mi
+    const plan = planSuggestedStopInsertions(legs, 24, 200);
+    expect(plan).toHaveLength(1);
+    expect(plan[0].index).toBe(1);
+    expect(plan[0].waypoint.name).toContain('200');
+  });
+
+  it('increments the target index for each additional stop within the same leg, in geographic order', () => {
+    // 750mi single leg at a 200mi interval -> 3 stops, all originally legIndex 0.
+    const legs = [makeLeg('a', 'b', [200, 200, 200, 150])];
+    const plan = planSuggestedStopInsertions(legs, 24, 200);
+    expect(plan.map((p) => p.index)).toEqual([1, 2, 3]);
+    // Applying insertWaypointAt at these indices in order lands them in mile order.
+    const waypoints = ['W0', 'W1'];
+    for (const { index, waypoint } of plan) waypoints.splice(index, 0, waypoint.name);
+    expect(waypoints).toEqual(['W0', 'Rest stop (~200 mi)', 'Rest stop (~400 mi)', 'Rest stop (~600 mi)', 'W1']);
+  });
+
+  it('offsets later legs by however many stops were inserted into earlier legs', () => {
+    // leg0 (a->b): 750mi, needs 3 stops. leg1 (b->c): 300mi, needs 1 stop.
+    const legs = [makeLeg('a', 'b', [200, 200, 200, 150]), makeLeg('b', 'c', [100, 100, 100])];
+    const plan = planSuggestedStopInsertions(legs, 24, 200);
+    expect(plan.map((p) => p.index)).toEqual([1, 2, 3, 5]);
+
+    const waypoints = ['W0', 'W1', 'W2'];
+    for (const { index, waypoint } of plan) waypoints.splice(index, 0, waypoint.name);
+    expect(waypoints[4]).toBe('W1'); // original b, pushed right by the 3 leg-0 insertions
+    expect(waypoints[5]).toBe('Rest stop (~200 mi)'); // the leg-1 stop, correctly after W1
+    expect(waypoints[6]).toBe('W2');
   });
 });

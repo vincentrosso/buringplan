@@ -59,3 +59,29 @@ export function suggestedStopToWaypoint(stop: SuggestedStop): Omit<Waypoint, 'id
     notes: 'Auto-suggested rest stop',
   };
 }
+
+export interface WaypointInsertion {
+  index: number;
+  waypoint: Omit<Waypoint, 'id'>;
+}
+
+// Turns every currently-suggested stop into an ordered list of (index, waypoint)
+// insertions that can be applied via insertWaypointAt() one at a time, left to
+// right, and land in the correct geographic order. Two or more stops can share
+// the same original legIndex (a single long leg split into several pieces), so
+// each insertion after the first needs its target index bumped by however many
+// insertions already happened — otherwise a later-in-leg stop would get spliced
+// in BEFORE an earlier one instead of after it.
+export function planSuggestedStopInsertions(
+  legs: RouteLeg[],
+  intervalHours: number,
+  intervalMiles: number,
+): WaypointInsertion[] {
+  const stops = computeSuggestedStops(legs, intervalHours, intervalMiles);
+  let insertedSoFar = 0;
+  return stops.map((stop) => {
+    const index = stop.legIndex + 1 + insertedSoFar;
+    insertedSoFar += 1;
+    return { index, waypoint: suggestedStopToWaypoint(stop) };
+  });
+}

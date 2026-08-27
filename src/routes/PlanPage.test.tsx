@@ -4,11 +4,24 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import PlanPage from './PlanPage';
 import { fetchRouteLegs } from '../lib/directions';
 import { useTripStore } from '../store/tripStore';
+import type { RouteLeg } from '../types';
 
 vi.mock('../lib/directions', () => ({
   fetchRouteLegs: vi.fn().mockResolvedValue([]),
   clearLegCache: vi.fn(),
 }));
+
+function makeLeg(miles: number): RouteLeg {
+  const meters = miles * 1609.344;
+  return {
+    fromId: 'x',
+    toId: 'y',
+    distanceMeters: meters,
+    durationSeconds: 3600,
+    polyline: '',
+    steps: [{ lat: 1, lng: 1, distanceMeters: meters, durationSeconds: 3600 }],
+  };
+}
 
 const initialState = useTripStore.getState();
 
@@ -55,5 +68,54 @@ describe('PlanPage', () => {
 
     expect(screen.getByText('Stillwater, MN')).toBeInTheDocument();
     expect(useTripStore.getState().waypoints).toHaveLength(4);
+  });
+
+  it('auto-inserts a suggested stop into the route on baseline load, no click needed', async () => {
+    vi.mocked(fetchRouteLegs)
+      .mockResolvedValueOnce([makeLeg(250)]) // baseline: one oversized leg
+      .mockResolvedValue([makeLeg(50)]); // the re-fetch triggered by the insertion itself
+
+    render(<PlanPage />);
+
+    await waitFor(() =>
+      expect(useTripStore.getState().waypoints.some((w) => w.name.startsWith('Rest stop'))).toBe(true),
+    );
+    expect(useTripStore.getState().waypoints).toHaveLength(5);
+    expect(screen.getByText(/Rest stop/)).toBeInTheDocument();
+  });
+
+  it('auto-inserts again when Recalc finds a leg that still needs splitting', async () => {
+    const user = userEvent.setup();
+    vi.mocked(fetchRouteLegs)
+      .mockResolvedValueOnce([makeLeg(50)]) // baseline: nothing to split
+      .mockResolvedValueOnce([makeLeg(250)]) // recalc: now needs a split
+      .mockResolvedValue([makeLeg(50)]); // the re-fetch triggered by the insertion itself
+
+    render(<PlanPage />);
+    await waitFor(() => expect(fetchRouteLegs).toHaveBeenCalledTimes(1));
+    expect(useTripStore.getState().waypoints.some((w) => w.name.startsWith('Rest stop'))).toBe(false);
+
+    await user.click(screen.getByText('Recalc route'));
+
+    await waitFor(() =>
+      expect(useTripStore.getState().waypoints.some((w) => w.name.startsWith('Rest stop'))).toBe(true),
+    );
+  });
+
+  it('does not auto-insert on a route change from something other than baseline load or Recalc', async () => {
+    vi.mocked(fetchRouteLegs)
+      .mockResolvedValueOnce([makeLeg(50)]) // baseline
+      .mockResolvedValueOnce([makeLeg(250)]); // after a manual waypoint add
+
+    render(<PlanPage />);
+    await waitFor(() => expect(fetchRouteLegs).toHaveBeenCalledTimes(1));
+
+    useTripStore.getState().addWaypoint({ name: 'New Stop', address: '', lat: 1, lng: 1, notes: '' });
+
+    // Wait for the second fetch's result to actually render, proving handleLegsLoaded
+    // ran to completion (including the skipped-insert branch), not just that the
+    // fetch was called.
+    expect(await screen.findByText(/Leg 1: 250 mi/)).toBeInTheDocument();
+    expect(useTripStore.getState().waypoints.some((w) => w.name.startsWith('Rest stop'))).toBe(false);
   });
 });

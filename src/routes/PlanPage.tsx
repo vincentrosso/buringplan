@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import MapView from '../components/MapView';
 import RouteStats from '../components/RouteStats';
 import SuggestedStops from '../components/SuggestedStops';
 import WaypointForm from '../components/WaypointForm';
 import WaypointList from '../components/WaypointList';
-import { computeSuggestedStops, suggestedStopToWaypoint } from '../lib/suggestedStops';
+import { computeSuggestedStops, planSuggestedStopInsertions, suggestedStopToWaypoint } from '../lib/suggestedStops';
 import { useTripStore } from '../store/tripStore';
 import type { RouteLeg } from '../types';
 
@@ -18,15 +18,30 @@ export default function PlanPage() {
   const [legs, setLegs] = useState<RouteLeg[]>([]);
   const [recalcSignal, setRecalcSignal] = useState(0);
   const [confirmingClear, setConfirmingClear] = useState(false);
+  // Tracks which recalcSignal we've already auto-inserted stops for, so a fresh
+  // route load (baseline mount, or a Recalc click bumping recalcSignal) fills in
+  // suggested stops exactly once — not on every subsequent waypoints change,
+  // including the ones the insertion itself causes.
+  const lastAutoInsertSignal = useRef<number | null>(null);
 
   const suggestedStops = useMemo(
     () => computeSuggestedStops(legs, stopIntervalHours, stopIntervalMiles),
     [legs, stopIntervalHours, stopIntervalMiles],
   );
 
+  function handleLegsLoaded(newLegs: RouteLeg[]) {
+    setLegs(newLegs);
+    if (lastAutoInsertSignal.current === recalcSignal) return;
+    lastAutoInsertSignal.current = recalcSignal;
+
+    const insertions = planSuggestedStopInsertions(newLegs, stopIntervalHours, stopIntervalMiles);
+    insertions.forEach(({ index, waypoint }) => insertWaypointAt(index, waypoint));
+  }
+
   function handleClear() {
     clearTrip();
     setLegs([]);
+    lastAutoInsertSignal.current = null;
     setConfirmingClear(false);
   }
 
@@ -64,7 +79,7 @@ export default function PlanPage() {
         </div>
         <WaypointForm />
         <WaypointList />
-        <RouteStats onLegsLoaded={setLegs} recalcSignal={recalcSignal} />
+        <RouteStats onLegsLoaded={handleLegsLoaded} recalcSignal={recalcSignal} />
         <SuggestedStops stops={suggestedStops} hasLegs={legs.length > 0} />
       </div>
     </div>

@@ -116,6 +116,11 @@ body {
 }
 
 .map-info-window {
+  /* Google's InfoWindow chrome is always light, regardless of the page's dark
+     color-scheme — without this, unstyled/native form control colors (like a
+     button's default text) render using the page's dark scheme and disappear
+     against the InfoWindow's light background. */
+  color-scheme: light;
   color: #1a1a1a;
   max-width: 220px;
   display: flex;
@@ -142,6 +147,7 @@ body {
   border-radius: 4px;
   border: 1px solid #ccc;
   background: #f5f5f5;
+  color: #1a1a1a;
   cursor: pointer;
 }
 
