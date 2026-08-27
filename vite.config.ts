@@ -1,0 +1,42 @@
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
+
+// GitHub Pages serves this at https://<user>.github.io/buringplan/, so assets
+// need the repo name as a base path in production builds.
+const base = process.env.GITHUB_PAGES ? '/buringplan/' : '/'
+
+export default defineConfig({
+  base,
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg'],
+      manifest: {
+        name: 'buringplan — tow trip planner',
+        short_name: 'buringplan',
+        description: 'Truck + trailer camping trip planner: Stillwater to Gerlach',
+        theme_color: '#17140f',
+        background_color: '#17140f',
+        display: 'standalone',
+        icons: [
+          { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+          {
+            src: 'icons/icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        // Keep the app shell installable/offline-capable; live GPS tracking works
+        // offline regardless (Geolocation + IndexedDB don't need network), only the
+        // map tiles themselves need connectivity.
+        globPatterns: ['**/*.{js,css,html,svg,png}'],
+      },
+    }),
+  ],
+})
