@@ -1,3 +1,4 @@
+import { suggestedStopToWaypoint } from '../lib/suggestedStops';
 import { useTripStore } from '../store/tripStore';
 import type { SuggestedStop } from '../types';
 
@@ -55,15 +56,7 @@ export default function SuggestedStops({ stops, hasLegs }: SuggestedStopsProps) 
               </span>
               <button
                 type="button"
-                onClick={() =>
-                  insertWaypointAt(stop.legIndex + 1, {
-                    name: `Rest stop (~${stop.milesIntoLeg.toFixed(0)} mi)`,
-                    address: '',
-                    lat: stop.lat,
-                    lng: stop.lng,
-                    notes: 'Auto-suggested rest stop',
-                  })
-                }
+                onClick={() => insertWaypointAt(stop.legIndex + 1, suggestedStopToWaypoint(stop))}
               >
                 Add as waypoint
               </button>

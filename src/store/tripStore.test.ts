@@ -164,3 +164,26 @@ describe('tripStore stop interval settings', () => {
     expect(state.stopIntervalMiles).toBe(150);
   });
 });
+
+describe('tripStore clearTrip', () => {
+  it('empties both waypoints and parkingSpots, leaving interval settings untouched', () => {
+    useTripStore.getState().addParkingSpot({
+      waypointId: useTripStore.getState().waypoints[0].id,
+      placeId: 'p1',
+      name: 'A',
+      address: '',
+      category: 'campground',
+      lat: 0,
+      lng: 0,
+      notes: '',
+    });
+    useTripStore.getState().setStopIntervalMiles(150);
+
+    useTripStore.getState().clearTrip();
+
+    const state = useTripStore.getState();
+    expect(state.waypoints).toEqual([]);
+    expect(state.parkingSpots).toEqual([]);
+    expect(state.stopIntervalMiles).toBe(150);
+  });
+});

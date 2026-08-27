@@ -1,4 +1,4 @@
-import type { RouteLeg, SuggestedStop } from '../types';
+import type { RouteLeg, SuggestedStop, Waypoint } from '../types';
 
 const METERS_PER_MILE = 1609.344;
 
@@ -44,4 +44,18 @@ export function computeSuggestedStops(
   });
 
   return stops;
+}
+
+// Shared by SuggestedStops.tsx (sidebar "Add as waypoint") and MapView.tsx (the
+// same action from the marker's info window), so both promote a suggested stop
+// into a real waypoint identically. The insertion index is stop.legIndex + 1
+// (the leg from waypoints[legIndex] to waypoints[legIndex + 1]).
+export function suggestedStopToWaypoint(stop: SuggestedStop): Omit<Waypoint, 'id'> {
+  return {
+    name: `Rest stop (~${stop.milesIntoLeg.toFixed(0)} mi)`,
+    address: '',
+    lat: stop.lat,
+    lng: stop.lng,
+    notes: 'Auto-suggested rest stop',
+  };
 }

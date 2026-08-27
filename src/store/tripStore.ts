@@ -55,6 +55,7 @@ interface TripState {
   updateParkingSpotNotes: (id: string, notes: string) => void;
   setStopIntervalHours: (hours: number) => void;
   setStopIntervalMiles: (miles: number) => void;
+  clearTrip: () => void;
 }
 
 function makeId(): string {
@@ -121,6 +122,8 @@ export const useTripStore = create<TripState>()(
 
       setStopIntervalHours: (hours) => set({ stopIntervalHours: hours }),
       setStopIntervalMiles: (miles) => set({ stopIntervalMiles: miles }),
+
+      clearTrip: () => set({ waypoints: [], parkingSpots: [] }),
     }),
     { name: 'buringplan-trip' },
   ),

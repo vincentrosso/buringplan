@@ -2,7 +2,7 @@
 
 Trip planner for a truck-towed-trailer camping road trip: Stillwater, MN → Apple Valley, MN → Denver, CO → Gerlach, NV.
 
-Plan and reorder waypoints, see route distance/drive time, find nearby campgrounds and Walmart lots for overnight trailer parking, and track live mileage/speed while driving. Everything is saved in the browser (localStorage + IndexedDB) — no backend, no account.
+Plan and reorder waypoints, see route distance/drive time, get suggested rest stops every N hours/N miles (adjustable), find nearby campgrounds and Walmart lots for overnight trailer parking, and track live mileage/speed while driving. Click any numbered flag, parking pin, or suggested-stop marker on the map for details and quick actions (remove a stop, add a suggested stop to the route). The Plan tab's toolbar has **Recalc route** (bypasses the route cache for a fresh pull from Google) and **Clear trip** (wipes all waypoints/parking spots, with a confirm step). Everything is saved in the browser (localStorage + IndexedDB) — no backend, no account.
 
 ## Setup
 

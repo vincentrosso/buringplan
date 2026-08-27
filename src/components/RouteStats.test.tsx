@@ -1,12 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RouteStats from './RouteStats';
-import { fetchRouteLegs } from '../lib/directions';
+import { clearLegCache, fetchRouteLegs } from '../lib/directions';
 import { useTripStore } from '../store/tripStore';
 import type { RouteLeg } from '../types';
 
 vi.mock('../lib/directions', () => ({
   fetchRouteLegs: vi.fn(),
+  clearLegCache: vi.fn(),
 }));
 
 const initialState = useTripStore.getState();
@@ -15,6 +16,7 @@ beforeEach(() => {
   localStorage.clear();
   useTripStore.setState(initialState, true);
   vi.mocked(fetchRouteLegs).mockReset();
+  vi.mocked(clearLegCache).mockClear();
 });
 
 const LEGS: RouteLeg[] = [
@@ -46,5 +48,23 @@ describe('RouteStats', () => {
     vi.mocked(fetchRouteLegs).mockRejectedValue(new Error('quota exceeded'));
     render(<RouteStats />);
     expect(await screen.findByText(/Couldn't calculate the route/)).toBeInTheDocument();
+  });
+
+  it('does not clear the leg cache on a normal fetch (recalcSignal unset)', async () => {
+    vi.mocked(fetchRouteLegs).mockResolvedValue(LEGS);
+    render(<RouteStats />);
+    await screen.findByText(/300 mi/);
+    expect(clearLegCache).not.toHaveBeenCalled();
+  });
+
+  it('clears the leg cache and re-fetches when recalcSignal increases', async () => {
+    vi.mocked(fetchRouteLegs).mockResolvedValue(LEGS);
+    const { rerender } = render(<RouteStats recalcSignal={0} />);
+    await screen.findByText(/300 mi/);
+    expect(fetchRouteLegs).toHaveBeenCalledTimes(1);
+
+    rerender(<RouteStats recalcSignal={1} />);
+    await waitFor(() => expect(fetchRouteLegs).toHaveBeenCalledTimes(2));
+    expect(clearLegCache).toHaveBeenCalledTimes(1);
   });
 });

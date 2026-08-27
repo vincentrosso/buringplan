@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchRouteLegs } from '../lib/directions';
+import { clearLegCache, fetchRouteLegs } from '../lib/directions';
 import { metersToMiles } from '../lib/geo';
 import { useTripStore } from '../store/tripStore';
 import type { RouteLeg } from '../types';
@@ -12,9 +12,12 @@ function formatDuration(seconds: number): string {
 
 interface RouteStatsProps {
   onLegsLoaded?: (legs: RouteLeg[]) => void;
+  // Bump this (e.g. from a "Recalc" button) to force a fresh fetch bypassing the
+  // in-memory leg cache, even when the waypoints themselves haven't changed.
+  recalcSignal?: number;
 }
 
-export default function RouteStats({ onLegsLoaded }: RouteStatsProps) {
+export default function RouteStats({ onLegsLoaded, recalcSignal = 0 }: RouteStatsProps) {
   const waypoints = useTripStore((s) => s.waypoints);
   const [legs, setLegs] = useState<RouteLeg[]>([]);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
@@ -25,6 +28,7 @@ export default function RouteStats({ onLegsLoaded }: RouteStatsProps) {
       return;
     }
     let cancelled = false;
+    if (recalcSignal > 0) clearLegCache();
     setStatus('loading');
     fetchRouteLegs(waypoints)
       .then((result) => {
@@ -40,7 +44,7 @@ export default function RouteStats({ onLegsLoaded }: RouteStatsProps) {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [waypoints]);
+  }, [waypoints, recalcSignal]);
 
   if (waypoints.length < 2) {
     return <p className="route-stats-empty">Add at least two stops to see route stats.</p>;

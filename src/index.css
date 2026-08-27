@@ -90,6 +90,61 @@ body {
   gap: 1rem;
 }
 
+.plan-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.plan-toolbar button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.plan-toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.plan-toolbar-clear-confirm {
+  border-color: #e57373 !important;
+  color: #e57373 !important;
+}
+
+.map-info-window {
+  color: #1a1a1a;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+}
+
+.map-info-category {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.map-info-notes {
+  font-style: italic;
+  color: #444;
+}
+
+.map-info-window button {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
 .waypoint-input {
   width: 100%;
   padding: 0.5rem;
