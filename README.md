@@ -20,6 +20,8 @@ You need a Google Cloud API key with **Maps JavaScript API**, **Places API**, an
 - `npm run build` — type-check + production build
 - `npm run preview` — preview the production build locally
 - `npm run lint` — oxlint
+- `npm test` — run the test suite (Vitest)
+- `npm run test:coverage` — run tests with a coverage report (gated at 80% lines/statements/functions/branches)
 
 ## Deploy
 
@@ -30,4 +32,4 @@ Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publ
 - Google's Directions API has no truck/trailer height- or weight-restricted routing mode — sanity-check mountain passes (e.g. near Denver) manually.
 - "Overnight parking allowed" isn't a field Google exposes for Walmart/campgrounds — the parking finder surfaces nearby candidates, you confirm and note it yourself per spot.
 - Live tracking (position/speed logging) keeps working with no signal, since it only needs the device GPS and local storage; the map view itself needs connectivity to load tiles.
-- Trip state lives only in your browser. Use the trip log's Export buttons (JSON/GPX) as a backup before clearing site data.
+- Trip state lives only in your browser (localStorage + IndexedDB) — clearing site data loses it, so treat that as destructive.

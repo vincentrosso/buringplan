@@ -419,11 +419,6 @@ body {
   gap: 0.5rem;
 }
 
-.trip-log-export-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .trip-log-table table {
   width: 100%;
   border-collapse: collapse;

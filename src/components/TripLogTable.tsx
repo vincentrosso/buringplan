@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import {
-  deleteDaySummary,
-  downloadTextFile,
-  exportTripLogGpx,
-  exportTripLogJson,
-  getAllDaySummaries,
-  updateDaySummary,
-} from '../store/tripLog';
+import { deleteDaySummary, getAllDaySummaries, updateDaySummary } from '../store/tripLog';
 import type { DaySummary } from '../types';
 import ManualLogEntry from './ManualLogEntry';
 
@@ -92,28 +85,12 @@ export default function TripLogTable({ refreshSignal }: TripLogTableProps) {
     refresh();
   }
 
-  async function handleExportJson() {
-    downloadTextFile('buringplan-trip-log.json', await exportTripLogJson(), 'application/json');
-  }
-
-  async function handleExportGpx() {
-    downloadTextFile('buringplan-trip-log.gpx', await exportTripLogGpx(), 'application/gpx+xml');
-  }
-
   const totalMiles = summaries.reduce((sum, s) => sum + s.distanceMiles, 0);
 
   return (
     <div className="trip-log-table">
       <div className="trip-log-header">
         <h3>Trip log ({totalMiles.toFixed(0)} mi total)</h3>
-        <div className="trip-log-export-buttons">
-          <button type="button" onClick={() => void handleExportJson()} disabled={summaries.length === 0}>
-            Export JSON
-          </button>
-          <button type="button" onClick={() => void handleExportGpx()} disabled={summaries.length === 0}>
-            Export GPX
-          </button>
-        </div>
       </div>
 
       <ManualLogEntry onSaved={refresh} />
