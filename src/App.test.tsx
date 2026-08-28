@@ -40,7 +40,7 @@ describe('App', () => {
     expect(screen.getByText('Loading map...')).toBeInTheDocument();
   });
 
-  it('shows the build version in the header', () => {
+  it('shows the build version in the footer', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'fake-key');
     render(<App />);
     expect(screen.getByText(`v${__APP_VERSION__}`)).toBeInTheDocument();

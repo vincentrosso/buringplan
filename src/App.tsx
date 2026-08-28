@@ -23,15 +23,7 @@ export default function App() {
     <HashRouter>
       <div className="app-shell">
         <header className="app-header">
-          <div className="app-brand">
-            <h1>🔥 Stillwater → Gerlach</h1>
-            <span
-              className="app-version"
-              title={`commit ${__APP_COMMIT__} · built ${__APP_BUILD_DATE__}`}
-            >
-              v{__APP_VERSION__}
-            </span>
-          </div>
+          <h1>🔥 Stillwater → Gerlach</h1>
           <nav className="app-nav">
             <NavLink to="/" end>
               Plan
@@ -56,6 +48,12 @@ export default function App() {
             </Routes>
           )}
         </main>
+
+        <footer className="app-footer">
+          <span title={`commit ${__APP_COMMIT__} · built ${__APP_BUILD_DATE__}`}>
+            v{__APP_VERSION__}
+          </span>
+        </footer>
       </div>
     </HashRouter>
   );
