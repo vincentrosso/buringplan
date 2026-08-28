@@ -483,10 +483,11 @@ body {
   color: #e57373;
 }
 
+/* Root is display:contents so the trigger buttons sit directly in the
+   .plan-toolbar flex row alongside Recalc/Clear; the panel and status line
+   take a full row of their own via flex-basis. */
 .trip-data-transfer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: contents;
 }
 
 .trip-data-transfer-buttons {
@@ -495,21 +496,8 @@ body {
   flex-wrap: wrap;
 }
 
-.trip-data-transfer-buttons button {
-  padding: 0.4rem 0.75rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.trip-data-transfer-buttons button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .trip-data-transfer-panel {
+  flex-basis: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -517,6 +505,10 @@ body {
   border-radius: 6px;
   padding: 0.75rem;
   font-size: 0.8rem;
+}
+
+.trip-data-transfer-panel p {
+  margin: 0;
 }
 
 .trip-data-transfer-text {
@@ -533,6 +525,7 @@ body {
 }
 
 .trip-data-transfer-status {
+  flex-basis: 100%;
   margin: 0;
   font-size: 0.8rem;
   color: var(--color-text-dim);

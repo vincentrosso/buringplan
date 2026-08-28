@@ -83,8 +83,8 @@ export default function PlanPage() {
               </button>
             </>
           )}
+          <TripDataTransfer onImported={handleImported} />
         </div>
-        <TripDataTransfer onImported={handleImported} />
         <WaypointForm />
         <WaypointList />
         <RouteStats onLegsLoaded={handleLegsLoaded} recalcSignal={recalcSignal} />

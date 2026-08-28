@@ -58,14 +58,14 @@ export default function TripDataTransfer({ onImported }: TripDataTransferProps) 
   return (
     <div className="trip-data-transfer">
       {mode === 'idle' && (
-        <div className="trip-data-transfer-buttons">
+        <>
           <button type="button" onClick={() => void openExport()}>
             Export trip data
           </button>
           <button type="button" onClick={openImport}>
             Import trip data
           </button>
-        </div>
+        </>
       )}
 
       {status && <p className="trip-data-transfer-status">{status}</p>}
