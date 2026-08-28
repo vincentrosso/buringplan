@@ -31,10 +31,13 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      // 'prompt', not 'autoUpdate': a new service worker waits instead of taking
-      // over silently, so <UpdateBanner> can offer a reload on the user's terms
-      // (never mid-drive) rather than swapping assets under an open tab.
-      registerType: 'prompt',
+      // autoUpdate: the new service worker skips waiting and claims open pages,
+      // so a client on an old build upgrades itself with no user action. We
+      // register it by hand (see src/lib/appUpdate.ts) to add a one-time reload
+      // when the new worker takes control — held back while a drive is being
+      // tracked so nobody loses a live session.
+      registerType: 'autoUpdate',
+      injectRegister: false,
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'buringplan — tow trip planner',
@@ -59,6 +62,20 @@ export default defineConfig({
         // offline regardless (Geolocation + IndexedDB don't need network), only the
         // map tiles themselves need connectivity.
         globPatterns: ['**/*.{js,css,html,svg,png}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        // Always try the network for the page document so a reopened app on a
+        // stale shell pulls the current index.html (and its hashed assets) when
+        // online; the precache still covers offline.
+        navigateFallback: 'index.html',
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: { cacheName: 'app-shell', networkTimeoutSeconds: 3 },
+          },
+        ],
       },
     }),
   ],

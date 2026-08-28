@@ -1,5 +1,4 @@
 import { HashRouter, NavLink, Route, Routes } from 'react-router';
-import UpdateBanner from './components/UpdateBanner';
 import { useGoogleMaps } from './lib/googleMaps';
 import ParkingPage from './routes/ParkingPage';
 import PlanPage from './routes/PlanPage';
@@ -23,7 +22,6 @@ export default function App() {
   return (
     <HashRouter>
       <div className="app-shell">
-        <UpdateBanner />
         <header className="app-header">
           <div className="app-brand">
             <h1>🔥 Stillwater → Gerlach</h1>

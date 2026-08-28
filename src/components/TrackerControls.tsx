@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { setSafeToReload } from '../lib/appUpdate';
 import { haversineMeters, isPlausiblePing, metersToMiles, mpsToMph } from '../lib/geo';
 import { addPing, newTripId, saveDaySummary } from '../store/tripLog';
 import type { GpsPing } from '../types';
@@ -22,6 +23,12 @@ export default function TrackerControls({ onPositionChange, onSessionSaved }: Tr
   const lastAcceptedRef = useRef<GpsPing | null>(null);
   const distanceMetersRef = useRef(0);
   const maxSpeedMphRef = useRef(0);
+
+  // Never let a background app-update reload wipe a live tracking session.
+  useEffect(() => {
+    setSafeToReload(!tracking);
+    return () => setSafeToReload(true);
+  }, [tracking]);
 
   useEffect(() => {
     if (!tracking) return;

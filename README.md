@@ -27,7 +27,9 @@ You need a Google Cloud API key with **Maps JavaScript API**, **Places API**, an
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages. Add `VITE_GOOGLE_MAPS_API_KEY` as a repo secret first, and enable Pages (Settings → Pages → Source: GitHub Actions).
 
-The workflow auto-bumps the patch version in `package.json` on every push to `main` and commits it back as `chore(release): vX.Y.Z [skip ci]` (the `[skip ci]` keeps the bump from retriggering the workflow); build and deploy then run against that bumped commit. The running version — plus the short commit SHA and build date on hover — shows next to the title in the app header, so you can tell at a glance whether the deploy you're looking at is the latest. Needs `main` to allow direct pushes from the `GITHUB_TOKEN` (no branch protection blocking it).
+The workflow auto-bumps the patch version in `package.json` on every push to `main` and commits it back as `chore(release): vX.Y.Z [skip ci]` (the `[skip ci]` keeps the bump from retriggering the workflow); build and deploy then run against that bumped commit. The running version — plus the short commit SHA and build date on hover — shows next to the title in the app header. Needs `main` to allow direct pushes from the `GITHUB_TOKEN` (no branch protection blocking it).
+
+The PWA runs in `autoUpdate` mode: a new deploy's service worker skips waiting and claims open pages, and `src/lib/appUpdate.ts` reloads the page once when that happens so clients pick up the new build with no user action — **except while a drive is being tracked**, where the reload is held until tracking stops so a live session isn't lost. Navigations are `NetworkFirst`, so a reopened app on a stale shell also pulls the current build when online. A client stuck on a pre-`autoUpdate` build upgrades itself the next time it's fully reopened.
 
 ## Notes
 
