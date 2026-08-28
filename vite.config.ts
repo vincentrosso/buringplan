@@ -31,7 +31,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt', not 'autoUpdate': a new service worker waits instead of taking
+      // over silently, so <UpdateBanner> can offer a reload on the user's terms
+      // (never mid-drive) rather than swapping assets under an open tab.
+      registerType: 'prompt',
       includeAssets: ['favicon.svg'],
       manifest: {
         name: 'buringplan — tow trip planner',

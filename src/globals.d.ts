@@ -1,3 +1,5 @@
+/// <reference types="vite-plugin-pwa/react" />
+
 // Build-time constants injected by Vite's `define` (see vite.config.ts and
 // vitest.config.ts). Always strings.
 declare const __APP_VERSION__: string
