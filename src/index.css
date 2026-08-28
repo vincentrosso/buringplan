@@ -479,16 +479,68 @@ body {
   cursor: pointer;
 }
 
-.trip-log-email {
-  font-size: 0.8rem;
-  color: var(--color-accent);
-  text-decoration: none;
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
-  padding: 0.25rem 0.6rem;
+.trip-log-delete-confirm {
+  color: #e57373;
 }
 
-.trip-log-delete-confirm {
+.trip-data-transfer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trip-data-transfer-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.trip-data-transfer-buttons button {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.trip-data-transfer-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trip-data-transfer-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.trip-data-transfer-text {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.trip-data-transfer-status {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.trip-data-transfer-error {
+  margin: 0;
+  font-size: 0.8rem;
   color: #e57373;
 }
 

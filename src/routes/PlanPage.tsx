@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import MapView from '../components/MapView';
 import RouteStats from '../components/RouteStats';
 import SuggestedStops from '../components/SuggestedStops';
+import TripDataTransfer from '../components/TripDataTransfer';
 import WaypointForm from '../components/WaypointForm';
 import WaypointList from '../components/WaypointList';
 import { computeSuggestedStops, planSuggestedStopInsertions, suggestedStopToWaypoint } from '../lib/suggestedStops';
@@ -45,6 +46,12 @@ export default function PlanPage() {
     setConfirmingClear(false);
   }
 
+  function handleImported() {
+    setLegs([]);
+    lastAutoInsertSignal.current = null;
+    setRecalcSignal((n) => n + 1);
+  }
+
   return (
     <div className="page plan-page">
       <div className="plan-page-map">
@@ -77,6 +84,7 @@ export default function PlanPage() {
             </>
           )}
         </div>
+        <TripDataTransfer onImported={handleImported} />
         <WaypointForm />
         <WaypointList />
         <RouteStats onLegsLoaded={handleLegsLoaded} recalcSignal={recalcSignal} />

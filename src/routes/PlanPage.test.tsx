@@ -70,6 +70,32 @@ describe('PlanPage', () => {
     expect(useTripStore.getState().waypoints).toHaveLength(4);
   });
 
+  it('Import trip data replaces the waypoints and kicks off a recalc', async () => {
+    const user = userEvent.setup();
+    render(<PlanPage />);
+    await waitFor(() => expect(fetchRouteLegs).toHaveBeenCalledTimes(1));
+
+    await user.click(screen.getByText('Import trip data'));
+    await user.click(screen.getByLabelText('Trip data to import'));
+    await user.paste(
+      JSON.stringify({
+        app: 'buringplan',
+        version: 1,
+        waypoints: [
+          { id: 'z1', name: 'Zed One', lat: 1, lng: 2 },
+          { id: 'z2', name: 'Zed Two', lat: 3, lng: 4 },
+        ],
+        parkingSpots: [],
+        daySummaries: [],
+      }),
+    );
+    await user.click(screen.getByText('Load trip data'));
+
+    await waitFor(() => expect(screen.getByText('Zed One')).toBeInTheDocument());
+    expect(screen.queryByText('Stillwater, MN')).not.toBeInTheDocument();
+    await waitFor(() => expect(fetchRouteLegs.mock.calls.length).toBeGreaterThanOrEqual(2));
+  });
+
   it('auto-inserts a suggested stop into the route on baseline load, no click needed', async () => {
     vi.mocked(fetchRouteLegs)
       .mockResolvedValueOnce([makeLeg(250)]) // baseline: one oversized leg

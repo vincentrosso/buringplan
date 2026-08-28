@@ -1,4 +1,4 @@
-import { createStore, del, entries, get, set, values } from 'idb-keyval';
+import { clear, createStore, del, entries, get, set, setMany, values } from 'idb-keyval';
 import type { DaySummary, GpsPing } from '../types';
 
 // Live GPS pings can number in the thousands over a multi-day tow trip, so each
@@ -44,6 +44,20 @@ export async function updateDaySummary(
   const existing = await get<DaySummary>(tripId, summariesStore);
   if (!existing) return;
   await set(tripId, { ...existing, ...patch }, summariesStore);
+}
+
+// Wipe every summary (and every raw ping) and write the given set in one shot.
+// Used by the snapshot import — a restored trip replaces the log wholesale, and
+// old pings would just be orphans pointing at trip ids that no longer exist.
+export async function replaceAllDaySummaries(summaries: DaySummary[]): Promise<void> {
+  await clear(pingsStore);
+  await clear(summariesStore);
+  if (summaries.length > 0) {
+    await setMany(
+      summaries.map((s) => [s.tripId, s] as [string, DaySummary]),
+      summariesStore,
+    );
+  }
 }
 
 export async function deletePingsForTrip(tripId: string): Promise<void> {

@@ -6,6 +6,7 @@ import {
   getAllDaySummaries,
   getPingsForTrip,
   newTripId,
+  replaceAllDaySummaries,
   saveDaySummary,
   updateDaySummary,
 } from './tripLog';
@@ -77,6 +78,27 @@ describe('day summaries', () => {
 
   it('updateDaySummary is a no-op for an unknown tripId', async () => {
     await expect(updateDaySummary('does-not-exist', { distanceMiles: 1 })).resolves.toBeUndefined();
+  });
+
+  it('replaceAllDaySummaries wipes existing summaries and pings, then writes the new set', async () => {
+    const oldId = newTripId();
+    await saveDaySummary(makeSummary(oldId));
+    await addPing(makePing(oldId, 1000));
+
+    const a = newTripId();
+    const b = newTripId();
+    await replaceAllDaySummaries([makeSummary(a, { distanceMiles: 11 }), makeSummary(b, { distanceMiles: 22 })]);
+
+    const all = await getAllDaySummaries();
+    expect(all.map((s) => s.tripId).sort()).toEqual([a, b].sort());
+    expect(all.find((s) => s.tripId === oldId)).toBeUndefined();
+    expect(await getPingsForTrip(oldId)).toEqual([]);
+  });
+
+  it('replaceAllDaySummaries with an empty list clears the log', async () => {
+    await saveDaySummary(makeSummary(newTripId()));
+    await replaceAllDaySummaries([]);
+    expect(await getAllDaySummaries()).toEqual([]);
   });
 
   it('deleteDaySummary removes the summary and its associated pings', async () => {

@@ -10,21 +10,6 @@ function formatDuration(seconds: number): string {
   return `${hours}h ${minutes}m`;
 }
 
-export function buildTripLogMailto(summaries: DaySummary[]): string {
-  const totalMiles = summaries.reduce((sum, s) => sum + s.distanceMiles, 0);
-  const blocks = summaries.map((s) => {
-    const when = new Date(s.startTime).toLocaleString();
-    const head = s.label ? `${s.label} — ${when}` : when;
-    return `${head}\n  ${s.distanceMiles.toFixed(1)} mi · ${formatDuration(s.durationSeconds)} · avg ${s.avgSpeedMph.toFixed(0)} mph · max ${s.maxSpeedMph.toFixed(0)} mph`;
-  });
-  const body = [
-    `Trip log — ${summaries.length} session${summaries.length === 1 ? '' : 's'}, ${totalMiles.toFixed(0)} mi total`,
-    '',
-    blocks.join('\n\n'),
-  ].join('\n');
-  return `mailto:?subject=${encodeURIComponent('Trip log')}&body=${encodeURIComponent(body)}`;
-}
-
 interface TripLogTableProps {
   refreshSignal: number;
 }
@@ -69,11 +54,6 @@ export default function TripLogTable({ refreshSignal }: TripLogTableProps) {
     <div className="trip-log-table">
       <div className="trip-log-header">
         <h3>Trip log ({totalMiles.toFixed(0)} mi total)</h3>
-        {summaries.length > 0 && (
-          <a className="trip-log-email" href={buildTripLogMailto(summaries)}>
-            Email log
-          </a>
-        )}
       </div>
 
       <ManualLogEntry onSaved={refresh} />
