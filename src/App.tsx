@@ -23,7 +23,15 @@ export default function App() {
     <HashRouter>
       <div className="app-shell">
         <header className="app-header">
-          <h1>🔥 Stillwater → Gerlach</h1>
+          <div className="app-brand">
+            <h1>🔥 Stillwater → Gerlach</h1>
+            <span
+              className="app-version"
+              title={`commit ${__APP_COMMIT__} · built ${__APP_BUILD_DATE__}`}
+            >
+              v{__APP_VERSION__}
+            </span>
+          </div>
           <nav className="app-nav">
             <NavLink to="/" end>
               Plan

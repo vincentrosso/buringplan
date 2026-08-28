@@ -27,6 +27,8 @@ You need a Google Cloud API key with **Maps JavaScript API**, **Places API**, an
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages. Add `VITE_GOOGLE_MAPS_API_KEY` as a repo secret first, and enable Pages (Settings → Pages → Source: GitHub Actions).
 
+The workflow auto-bumps the patch version in `package.json` on every push to `main` and commits it back as `chore(release): vX.Y.Z [skip ci]` (the `[skip ci]` keeps the bump from retriggering the workflow); build and deploy then run against that bumped commit. The running version — plus the short commit SHA and build date on hover — shows next to the title in the app header, so you can tell at a glance whether the deploy you're looking at is the latest. Needs `main` to allow direct pushes from the `GITHUB_TOKEN` (no branch protection blocking it).
+
 ## Notes
 
 - Google's Directions API has no truck/trailer height- or weight-restricted routing mode — sanity-check mountain passes (e.g. near Denver) manually.

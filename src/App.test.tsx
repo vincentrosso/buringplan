@@ -40,6 +40,12 @@ describe('App', () => {
     expect(screen.getByText('Loading map...')).toBeInTheDocument();
   });
 
+  it('shows the build version in the header', () => {
+    vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'fake-key');
+    render(<App />);
+    expect(screen.getByText(`v${__APP_VERSION__}`)).toBeInTheDocument();
+  });
+
   it('renders the Plan page by default once loaded, with nav links to the other pages', () => {
     vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'fake-key');
     render(<App />);

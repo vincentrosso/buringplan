@@ -34,9 +34,22 @@ body {
   border-bottom: 1px solid var(--color-border);
 }
 
+.app-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
 .app-header h1 {
   font-size: 1.1rem;
   margin: 0;
+}
+
+.app-version {
+  font-size: 0.7rem;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+  cursor: default;
 }
 
 .app-nav {
