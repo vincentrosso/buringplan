@@ -57,6 +57,8 @@ export interface GpsPing {
 
 export interface DaySummary {
   tripId: string;
+  /** Optional free-text label, e.g. "Apple Valley → Denver". */
+  label?: string;
   startTime: number;
   endTime: number;
   distanceMiles: number;

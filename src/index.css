@@ -363,22 +363,17 @@ body {
   cursor: pointer;
 }
 
-.manual-entry-form {
+.trip-entry-form {
   border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-}
-
-.manual-entry-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+  width: 100%;
 }
 
-.manual-entry-grid label {
+.trip-entry-form label {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -386,36 +381,111 @@ body {
   color: var(--color-text-dim);
 }
 
-.manual-entry-grid input {
-  padding: 0.35rem;
+.trip-entry-form input {
+  padding: 0.4rem;
   border-radius: 4px;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
   color: var(--color-text);
+  font-size: 0.9rem;
 }
 
-.manual-entry-buttons {
+.trip-entry-form-row {
   display: flex;
   gap: 0.5rem;
 }
 
-.trip-log-actions {
-  display: flex;
-  gap: 0.3rem;
-  white-space: nowrap;
+.trip-entry-form-row label {
+  flex: 1;
 }
 
-.trip-log-edit-input {
-  width: 4.5rem;
-  padding: 0.25rem;
+.trip-entry-form-derived {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.trip-entry-form-derived span {
+  opacity: 0.7;
+}
+
+.trip-entry-form-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.trip-entry-form-buttons button {
+  padding: 0.4rem 0.9rem;
   border-radius: 4px;
   border: 1px solid var(--color-border);
-  background: var(--color-bg);
+  background: var(--color-panel);
   color: var(--color-text);
+  cursor: pointer;
 }
 
-.trip-log-edit-input--narrow {
-  width: 2.5rem;
+.trip-log-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.trip-log-card {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.6rem 0.7rem;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.trip-log-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.trip-log-card-label {
+  font-weight: 600;
+}
+
+.trip-log-card-date {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+}
+
+.trip-log-card-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.trip-log-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.trip-log-actions button {
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background: var(--color-panel);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.trip-log-email {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
 }
 
 .trip-log-delete-confirm {
@@ -478,19 +548,6 @@ body {
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.trip-log-table table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-}
-
-.trip-log-table th,
-.trip-log-table td {
-  text-align: left;
-  padding: 0.4rem;
-  border-bottom: 1px solid var(--color-border);
 }
 
 @media (max-width: 800px) {
